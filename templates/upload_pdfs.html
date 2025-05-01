@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">📁 批次上傳 PDF 論文檔案</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="pdf_files" class="form-label">選擇 PDF 檔案（可多選）：</label>
+            <input class="form-control" type="file" name="pdf_files" id="pdf_files" accept=".pdf" multiple required>
+        </div>
+        <button type="submit" class="btn btn-primary">📤 上傳 PDF</button>
+        <a href="{{ url_for('admin') }}" class="btn btn-secondary ms-2">⬅ 返回後台</a>
+    </form>
+</div>
+{% endblock %}

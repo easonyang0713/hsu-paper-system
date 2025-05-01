@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}許學仁榮譽教授紀念研究室 論文館藏系統{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 56px;  /* 預留 topbar 高度 */
+        }
+        .offcanvas {
+            width: 220px;
+        }
+    </style>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+<body>
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		<div class="container mt-3">
+		  {% for message in messages %}
+			<div class="alert alert-info alert-dismissible fade show" role="alert">
+			  {{ message }}
+			  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		  {% endfor %}
+		</div>
+	  {% endif %}
+	{% endwith %}
+
+<!-- 🔝 上方導覽列 -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <button class="btn btn-outline-light me-2" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+            ☰
+        </button>
+        <a class="navbar-brand" href="{{ url_for('index') }}">許學仁榮譽教授紀念研究室 論文館藏系統</a>
+        <div class="ms-auto d-flex align-items-center text-white small">
+		{% if session.get('logged_in') %}
+			<div class="me-2">
+				👤 {{ session.get('display_name', session.get('username')) }}
+				{% if session.get('role') == 'admin' %}
+					<span class="badge bg-warning text-dark ms-1">管理員</span>
+				{% endif %}
+			</div>
+			<a href="{{ url_for('logout') }}" class="btn btn-outline-light btn-sm">登出</a>
+		{% else %}
+			未登入
+		{% endif %}
+		</div>
+
+    </div>
+</nav>
+
+<!-- 📚 側邊欄 -->
+<div class="offcanvas offcanvas-start bg-light" tabindex="-1" id="sidebar">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">📚 系統導覽</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body px-3">
+
+    <div class="mb-4">
+      <h6 class="text-secondary border-bottom pb-1"><i class="bi bi-box"></i> 主要功能</h6>
+      <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">📊 個人介面</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">🔍 查詢系統</a></li>
+        {% if session.get('role') == 'admin' %}
+          <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('admin') }}">🛠️ 進入後台</a></li>
+        {% endif %}
+		<br>
+      </ul>
+	  
+	    <h6 class="text-secondary border-bottom pb-1"><i class="bi bi-box"></i> 關於紀念室</h6>
+	    <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('about_professor') }}">👤 許學仁教授生平</a></li>
+		</ul>
+</div>
+
+    <div class="mb-2">
+      <h6 class="text-secondary border-bottom pb-1"><i class="bi bi-info-circle"></i> 使用資訊</h6>
+      <p class="small ms-1">
+        登入者：<strong>{{ session.get('display_name', session.get('username')) }}</strong><br>
+        角色：<span class="text-muted">{{ session.get('role', '訪客') }}</span>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- 🔳 主內容區 -->
+<div class="container mt-4">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- 📦 Bootstrap JS & 全螢幕鎖 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% if session.get('role') != 'admin' %}
+    <script src="{{ url_for('static', filename='js/fullscreen_lock.js') }}"></script>
+    <script>setupFullscreenLock();</script>
+{% endif %}
+</body>
+</html>

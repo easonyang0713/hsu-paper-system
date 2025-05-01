@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>👋 歡迎回來，{{ session.get('display_name', session.get('username')) }}！</h2>
+
+{% if session.get('role') == 'admin' %}
+    <p class="mt-3">您是系統管理員，您可以管理論文與使用者資料。</p>
+    <a href="{{ url_for('admin') }}" class="btn btn-warning">進入後台</a>
+{% else %}
+    <p class="mt-3">這是您的個人儀表板，您可以瀏覽並查詢論文。</p>
+    <a href="{{ url_for('index') }}" class="btn btn-primary">前往查詢系統</a>
+{% endif %}
+
+<h4 class="mt-4">⭐ 我的收藏</h4>
+{% if favorites %}
+    <ul class="list-group">
+        {% for paper in favorites %}
+            <li class="list-group-item">
+                <a href="{{ url_for('paper_detail', paper_id=paper['id']) }}">{{ paper['title'] }}</a>
+                <span class="text-muted small">（{{ paper['year'] }}，{{ paper['authors'] }}）</span>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p class="text-muted">您尚未收藏任何論文。</p>
+{% endif %}
+
+{% endblock %}
