@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 # ✅ 設定檔案上傳目錄與 Session 金鑰
-app.secret_key = 'hsudatabase'  # 用來加密 session 的金鑰（可自訂）
+app.secret_key = os.getenv("SECRET_KEY")  # 用來加密 session 的金鑰（可自訂）
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'pdf')
 DB_PATH = 'papers.db'  # 資料庫路徑
 
@@ -807,6 +807,9 @@ def logout():
     session.clear()
     return redirect(url_for('index'))  # ✅ 改成導回首頁
 
+from email.mime.text import MIMEText
+import smtplib
+from email.mime.text import MIMEText
 
 @app.route('/paper/<int:paper_id>')
 def paper_detail(paper_id):
@@ -845,8 +848,59 @@ def paper_detail(paper_id):
 
     return render_template('paper_detail.html', paper=paper, fields=fields, is_favorited=is_favorited)
 
+@app.route('/apply', methods=['GET', 'POST'])
+def apply():
+    if request.method == 'POST':
+        realname = request.form['realname']
+        email = request.form['email']
+        identity = request.form['identity']
+        purpose = request.form['purpose']
+        username = request.form['username']
+        password = request.form['password']
+
+        # ✉️ Email 內容
+        subject = "【館藏系統帳號申請通知】"
+        body = f"""
+🔔 收到新的帳號申請：
+
+👤 姓名：{realname}
+📧 聯絡信箱：{email}
+🆔 身分：{identity}
+📝 用途：{purpose}
+
+💼 欲申請帳號：{username}
+🔐 欲設定密碼：{password}
+        """
+
+        sender_email = os.getenv("EMAIL_ADDRESS")
+        receiver_email = os.getenv("EMAIL_ADDRESS")
+        app_password = os.getenv("EMAIL_PASSWORD")
+
+        try:
+            msg = MIMEText(body)
+            msg['Subject'] = subject
+            msg['From'] = sender_email
+            msg['To'] = receiver_email
+
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+                server.login(sender_email, app_password)
+                server.send_message(msg)
+
+            flash("✅ 申請已提交，管理員將盡快與您聯繫")
+        except Exception as e:
+            print("❌ 發送失敗：", e)
+            flash("❌ 發送失敗，請稍後再試")
+
+        return redirect(url_for('login'))
+
+    return render_template('apply.html')
+
+
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+    app.run(debug=True)
+
 
 
 
