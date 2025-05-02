@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>研究領域管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+{% block content %}
+<body class="bg-light">
+
+<div class="container py-5">
+    <h1 class="mb-4">📚 研究領域管理</h1>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {{ messages[0] }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% if fields %}
+        {% for field in fields %}
+            <form action="{{ url_for('update_category', field_id=field.id) }}" method="POST" class="border rounded p-3 mb-4">
+                <div class="mb-3">
+                    <label for="name-{{ field.id }}" class="form-label">研究領域名稱：</label>
+                    <input type="text" class="form-control" id="name-{{ field.id }}" name="name" value="{{ field.name }}">
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">💾 儲存變更</button>
+                    <a href="{{ url_for('delete_category', field_id=field.id) }}" class="btn btn-outline-danger"
+                       onclick="return confirm('確定要刪除這個研究領域嗎？');">🗑 刪除</a>
+                </div>
+            </form>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-warning">目前尚無研究領域。</div>
+    {% endif %}
+
+    <a href="{{ url_for('admin') }}" class="btn btn-secondary mt-4">⬅ 返回後台首頁</a>
+</div>
+
+</body>
+{% endblock %}
+</html>

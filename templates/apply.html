@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">📩 帳號申請</h2>
+    <form method="POST" action="{{ url_for('apply') }}">
+    <div class="mb-3">
+        <label for="realname" class="form-label">姓名：</label>
+        <input type="text" class="form-control" name="realname" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">聯絡信箱：</label>
+        <input type="email" class="form-control" name="email" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="identity" class="form-label">身分：</label>
+        <select class="form-select" name="identity" required>
+            <option value="" disabled selected>請選擇</option>
+            <option>東華大學教授</option>
+            <option>東華大學學生</option>
+            <option>外校教授</option>
+            <option>外校學生</option>
+            <option>一般民眾</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="purpose" class="form-label">使用用途：</label>
+        <textarea class="form-control" name="purpose" rows="3" required></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label for="username" class="form-label">欲申請帳號：</label>
+        <input type="text" class="form-control" name="username" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">欲設定密碼：</label>
+        <input type="text" class="form-control" name="password" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">📤 提交申請</button>
+    <a href="{{ url_for('login') }}" class="btn btn-secondary ms-2">返回登入</a>
+</form>
+
+</div>
+{% endblock %}
+</html>

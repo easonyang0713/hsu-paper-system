@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container py-5">
+    <h2 class="mb-4">📄 新增論文</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label class="form-label">標題</label>
+            <input type="text" name="title" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">作者</label>
+            <input type="text" name="authors" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">摘要</label>
+            <textarea name="abstract" class="form-control" rows="4"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">出處</label>
+            <input type="text" name="source" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">發表年份</label>
+            <input type="number" name="year" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">關鍵字</label>
+            <input type="text" name="keywords" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">研究領域</label><br>
+            {% for field in existing_fields %}
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="fields" value="{{ field.id }}" id="field{{ field.id }}">
+                    <label class="form-check-label" for="field{{ field.id }}">{{ field.name }}</label>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">新增研究領域（選填）</label>
+            <input type="text" name="new_field" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">上傳 PDF（選填）</label>
+            <input type="file" name="pdf_file" class="form-control" accept="application/pdf">
+        </div>
+
+        <div class="mb-3 form-check">
+            <input class="form-check-input" type="checkbox" id="is_physical" name="is_physical" onchange="togglePhysicalId()">
+            <label class="form-check-label" for="is_physical">此論文為實體資料</label>
+        </div>
+
+        <div class="mb-3" id="physical_id_section" style="display: none;">
+            <label class="form-label">實體書編號</label>
+            <input type="text" name="physical_id" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-primary">新增論文</button>
+        <a href="{{ url_for('admin_papers') }}" class="btn btn-secondary">返回後台</a>
+    </form>
+</div>
+
+<script>
+function togglePhysicalId() {
+    const checkbox = document.getElementById('is_physical');
+    const section = document.getElementById('physical_id_section');
+    section.style.display = checkbox.checked ? 'block' : 'none';
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="card-title">{{ paper['title'] }}</h1>
+
+            <p><strong>作者：</strong>{{ paper['authors'] }}</p>
+            <p><strong>發表年份：</strong>{{ paper['year'] }}</p>
+            <p><strong>出處：</strong>{{ paper['source'] }}</p>
+            <p><strong>論文關鍵字：</strong>{{ paper['keywords'] }}</p>
+
+            <p><strong>研究領域：</strong>
+                {% if fields %}
+                    {% for f in fields %}
+                        <span class="badge bg-secondary me-1">{{ f }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span class="text-muted">無</span>
+                {% endif %}
+            </p>
+
+            <p><strong>摘要：</strong></p>
+            <p class="bg-light border rounded p-3">{{ paper['abstract'] }}</p>
+
+            {% if paper['pdf_filename'] %}
+            <div class="mt-4">
+                <h5>📄 PDF 預覽：</h5>
+                <iframe 
+                    src="{{ url_for('secure_pdf', filename=paper['pdf_filename']) }}#toolbar=0&navpanes=0&scrollbar=0" 
+                    width="100%" height="600px" style="border: none;"></iframe>
+            </div>
+            {% endif %}
+			
+			{% if paper['is_physical'] == 1 %}
+				<p><strong>實體書編號：</strong>{{ paper['physical_id'] }}</p>
+			{% endif %}
+
+
+		<div class="d-flex gap-2 mt-4">
+		<a href="/search" class="btn btn-secondary">⬅ 返回搜尋結果</a>
+
+		<form method="POST" action="{{ url_for('toggle_favorite', paper_id=paper['id']) }}">
+			{% if is_favorited %}
+			<button type="submit" class="btn btn-outline-danger">❌ 取消收藏</button>
+			{% else %}
+			<button type="submit" class="btn btn-outline-primary">⭐ 收藏此論文</button>
+			{% endif %}
+			</form>
+		</div>
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
